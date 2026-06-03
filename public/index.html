@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qlcc</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #eef2f7;
+  --white: #fff;
+  --border: #dde3ed;
+  --accent: #6c63ff;
+  --accent2: #a78bfa;
+  --text: #1a1a2e;
+  --muted: #7a8599;
+  --success: #22c55e;
+  --error: #ef4444;
+  --warn: #f59e0b;
+  --info: #3b82f6;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 32px 16px;
+}
+.nav { display: flex; gap: 12px; margin-bottom: 24px; }
+.nav a {
+  color: var(--muted); text-decoration: none; font-size: 0.88rem;
+  padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border);
+  background: var(--white); transition: all 0.2s;
+}
+.nav a.active, .nav a:hover { color: var(--accent); border-color: var(--accent); }
+
+.header-card {
+  width: 100%; max-width: 860px;
+  background: var(--white); border-radius: 14px;
+  padding: 28px 24px 24px; text-align: center; margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.header-card h1 {
+  font-size: 2rem; font-weight: 700;
+  background: linear-gradient(135deg, #6c63ff, #a78bfa);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.header-card .underline {
+  width: 48px; height: 3px; margin: 8px auto 0;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 2px;
+}
+
+.stock-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 20px; font-size: 0.8rem;
+  margin-bottom: 16px; font-weight: 500;
+}
+.stock-badge.high { background: rgba(34,197,94,0.12); color: #16a34a; border: 1px solid rgba(34,197,94,0.3); }
+.stock-badge.low  { background: rgba(245,158,11,0.12); color: #d97706; border: 1px solid rgba(245,158,11,0.3); }
+.stock-badge.none { background: rgba(239,68,68,0.12);  color: #dc2626; border: 1px solid rgba(239,68,68,0.3); }
+.stock-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+.steps { display: flex; align-items: center; margin-bottom: 24px; }
+.step {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 12px 8px; border-radius: 10px; border: 1px solid var(--border);
+  cursor: default; transition: all 0.25s; background: var(--white);
+}
+.step.active { border-color: var(--accent); background: rgba(108,99,255,0.05); }
+.step.done   { border-color: var(--accent); background: rgba(108,99,255,0.04); }
+.step-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 700;
+  background: var(--border); color: var(--muted);
+}
+.step.active .step-num, .step.done .step-num { background: var(--accent); color: #fff; }
+.step-label { font-size: 0.78rem; color: var(--muted); }
+.step.active .step-label, .step.done .step-label { color: var(--accent); }
+.step-connector { width: 32px; height: 2px; background: var(--border); flex-shrink: 0; }
+.step-connector.done { background: var(--accent); }
+
+.main-card {
+  width: 100%; max-width: 860px;
+  background: var(--white); border-radius: 14px; padding: 28px 28px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+label.field-label {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.88rem; font-weight: 500; margin-bottom: 8px; color: var(--text);
+}
+label.field-label .req { color: var(--error); }
+input[type=text], textarea {
+  width: 100%; padding: 11px 14px;
+  border: 1px solid var(--border); border-radius: 8px;
+  font-size: 0.92rem; color: var(--text); background: var(--white);
+  outline: none; transition: border-color 0.2s; font-family: inherit;
+}
+input[type=text]:focus, textarea:focus { border-color: var(--accent); }
+textarea { resize: vertical; min-height: 110px; }
+.field { margin-bottom: 20px; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 20px; border-radius: 8px; border: none;
+  font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+  text-decoration: none;
+}
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-primary { background: linear-gradient(135deg, var(--accent), #8b5cf6); color: #fff; width: 100%; }
+.btn-primary:hover:not(:disabled) { opacity: 0.88; }
+.btn-success { background: #22c55e; color: #fff; }
+.btn-success:hover { opacity: 0.88; }
+.btn-blue { background: var(--info); color: #fff; }
+.btn-blue:hover { opacity: 0.88; }
+.btn-gray { background: #e5e7eb; color: var(--muted); flex: 1; }
+.btn-gray:hover { background: #d1d5db; }
+.btn-confirm { background: #22c55e; color: #fff; flex: 2; }
+.btn-confirm:hover:not(:disabled) { opacity: 0.88; }
+.btn-row { display: flex; gap: 12px; margin-top: 4px; }
+
+.info-box { border: 1px solid #c7d7f5; background: #eff6ff; border-radius: 10px; padding: 14px 16px; margin-bottom: 20px; }
+.info-box .info-title { display: flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 600; color: var(--info); margin-bottom: 4px; }
+.info-box .info-val { font-size: 0.85rem; color: var(--muted); }
+
+.confirm-box { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+.confirm-title { padding: 12px 16px; font-weight: 600; font-size: 0.9rem; border-bottom: 1px solid var(--border); }
+.confirm-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 0.88rem;
+}
+.confirm-row:last-child { border-bottom: none; }
+.confirm-row .label { color: var(--muted); }
+.confirm-row .val { font-weight: 500; }
+
+.override-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px; }
+.override-row input[type=checkbox] { margin-top: 3px; width: 15px; height: 15px; accent-color: var(--accent); }
+.override-desc { font-size: 0.85rem; }
+.override-desc strong { display: block; margin-bottom: 2px; }
+.override-desc span { color: var(--warn); font-size: 0.8rem; }
+
+.alert { border-radius: 8px; padding: 10px 14px; font-size: 0.84rem; margin-bottom: 16px; }
+.alert-error { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); color: var(--error); }
+.alert-success { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.25); color: #16a34a; }
+.alert-warn { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: #92400e; }
+.alert-info { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.25); color: #1d4ed8; }
+
+.progress { background: var(--border); border-radius: 4px; height: 4px; overflow: hidden; margin-top: 12px; }
+.progress-bar {
+  height: 100%; width: 30%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 4px;
+  animation: slide 1.4s ease-in-out infinite;
+}
+@keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(400%); } }
+
+.guide-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.guide-label { font-size: 0.88rem; font-weight: 600; white-space: nowrap; min-width: 56px; }
+.hint-text { font-size: 0.78rem; color: var(--warn); margin-top: 6px; }
+.hint-text a { color: var(--accent); text-decoration: none; }
+.hint-small { font-size: 0.78rem; color: var(--muted); margin-top: 5px; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="active">卡密充值</a>
+  <a href="account.html">账号查询</a>
+</nav>
+
+<div class="header-card">
+  <h1>ChatGPT</h1>
+  <div class="underline"></div>
+</div>
+
+<div style="width:100%;max-width:860px;margin-bottom:12px">
+  <span id="stockBadge" class="stock-badge" style="display:none"></span>
+</div>
+
+<div class="main-card">
+  <div class="steps">
+    <div class="step active" id="step1"><div class="step-num">1</div><div class="step-label">验证卡密</div></div>
+    <div class="step-connector" id="conn1"></div>
+    <div class="step" id="step2"><div class="step-num">2</div><div class="step-label">获取密钥</div></div>
+    <div class="step-connector" id="conn2"></div>
+    <div class="step" id="step3"><div class="step-num">3</div><div class="step-label">确认充值</div></div>
+  </div>
+
+  <!-- Step 1 -->
+  <div id="panel1">
+    <div id="step1Alert"></div>
+    <div class="field">
+      <label class="field-label"><span>🔑</span> 验证卡密：卡密 <span class="req">*</span></label>
+      <input type="text" id="cardCode" placeholder="请输入卡密" autocomplete="off">
+    </div>
+    <button class="btn btn-primary" id="btnStep1" onclick="doStep1()"><span>✓</span> 验证卡密</button>
+  </div>
+
+  <!-- Step 2 -->
+  <div id="panel2" style="display:none">
+    <div class="info-box">
+      <div class="info-title"><span>ℹ️</span> 已验证卡密</div>
+      <div class="info-val" id="verifiedCardDisplay"></div>
+    </div>
+    <div class="guide-row">
+      <span class="guide-label">⚡ 第一步：</span>
+      <a class="btn btn-success" href="https://chatgpt.com" target="_blank"><span>↗</span> 点我登录GPT</a>
+    </div>
+    <div class="guide-row">
+      <span class="guide-label">⚡ 第二步：</span>
+      <a class="btn btn-blue" href="https://chatgpt.com/api/auth/session" target="_blank"><span>↗</span> 点我获取充值密钥</a>
+    </div>
+    <div class="hint-text">⚠ 如果返回充值密钥是空的，则登录不成功，<a href="https://chatgpt.com" target="_blank">请重新登录</a></div>
+    <div class="field" style="margin-top:16px">
+      <label class="field-label"><span>🔒</span> 第三步：输入充值密钥 <span class="req">*</span></label>
+      <textarea id="accessToken" placeholder="请将上方返回的全部充值密钥复制至此处"></textarea>
+      <div class="hint-small">ℹ 本站支持输入 account_id 或 rt 充值</div>
+    </div>
+    <div id="step2Alert"></div>
+    <div class="btn-row">
+      <button class="btn btn-gray" onclick="goStep(1)">‹ 返回</button>
+      <button class="btn btn-primary" style="flex:2" id="btnStep2" onclick="doStep2()">› 核对账户</button>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div id="panel3" style="display:none">
+    <div class="confirm-box">
+      <div class="confirm-title">确认充值信息</div>
+      <div class="confirm-row"><span class="label">账户邮箱：</span><span class="val" id="confirmEmail"></span></div>
+      <div class="confirm-row"><span class="label">卡密：</span><span class="val" id="confirmCard"></span></div>
+    </div>
+    <div class="override-row">
+      <input type="checkbox" id="forceRecharge">
+      <div class="override-desc">
+        <strong>覆盖充值</strong>
+        <span>勾选后，即使账户已是Plus也会充值<br>不累加时间，开始新的一个月</span>
+      </div>
+    </div>
+    <div id="step3Alert"></div>
+    <div id="pollStatus" style="display:none"></div>
+    <div class="btn-row">
+      <button class="btn btn-gray" id="btnBack3" onclick="goStep(2)">‹ 返回</button>
+      <button class="btn btn-confirm" id="btnConfirm" onclick="doConfirm()">⚡ 确认充值</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const BASE = '';
+let state = { card: '', email: '', token: '', step: 1 };
+let pollTimer = null;
+
+function showPanel(n) {
+  [1,2,3].forEach(i => {
+    document.getElementById('panel'+i).style.display = i===n ? '' : 'none';
+  });
+  [1,2,3].forEach(i => {
+    document.getElementById('step'+i).className = 'step' + (i < n ? ' done' : i === n ? ' active' : '');
+  });
+  document.getElementById('conn1').className = 'step-connector' + (n > 1 ? ' done' : '');
+  document.getElementById('conn2').className = 'step-connector' + (n > 2 ? ' done' : '');
+  state.step = n;
+}
+
+function goStep(n) { showPanel(n); }
+
+function setAlert(id, type, msg) {
+  document.getElementById(id).innerHTML = msg ? `<div class="alert alert-${type}">${msg}</div>` : '';
+}
+
+// Extract access_token from user paste (raw JWT, UUID, JSON with accessToken field, or rt)
+function extractToken(raw) {
+  raw = raw.trim();
+  if (!raw) return '';
+  // JSON object with accessToken / access_token / token field
+  if (raw.startsWith('{')) {
+    try {
+      const obj = JSON.parse(raw);
+      return obj.accessToken || obj.access_token || obj.token || raw;
+    } catch {}
+  }
+  return raw;
+}
+
+async function doStep1() {
+  const code = document.getElementById('cardCode').value.trim().toUpperCase();
+  if (!code) { setAlert('step1Alert','error','请输入卡密'); return; }
+  const btn = document.getElementById('btnStep1');
+  btn.disabled = true; btn.textContent = '验证中...';
+  setAlert('step1Alert','','');
+  try {
+    const res = await fetch(`${BASE}/api/card-keys/${encodeURIComponent(code)}`);
+    const data = await res.json();
+    renderStock(data);
+    if (!data.available && !data.used_email) {
+      setAlert('step1Alert','error', data.error || '卡密不可用');
+      return;
+    }
+    if (data.available && data.product_api_type === 'claude') {
+      setAlert('step1Alert','error','暂不支持 Claude 产品充值');
+      return;
+    }
+    state.card = code;
+    document.getElementById('verifiedCardDisplay').textContent = '卡密: ' + code;
+    document.getElementById('confirmCard').textContent = code;
+    showPanel(2);
+  } catch {
+    setAlert('step1Alert','error','网络错误，请重试');
+  } finally {
+    btn.disabled = false; btn.innerHTML = '<span>✓</span> 验证卡密';
+  }
+}
+
+function renderStock(data) {
+  const badge = document.getElementById('stockBadge');
+  const map = { high: ['high','库存充足，尽情充值'], low: ['low','库存偏少'], none: ['none','库存为空'] };
+  const info = map[data.stock_level];
+  if (!info) { badge.style.display='none'; return; }
+  badge.className = 'stock-badge ' + info[0];
+  badge.style.display = 'inline-flex';
+  badge.innerHTML = `<span class="dot"></span>${info[1]}`;
+}
+
+async function doStep2() {
+  const raw = document.getElementById('accessToken').value.trim();
+  if (!raw) { setAlert('step2Alert','error','请输入充值密钥'); return; }
+  const token = extractToken(raw);
+  const btn = document.getElementById('btnStep2');
+  btn.disabled = true; btn.textContent = '核对中...';
+  setAlert('step2Alert','','');
+
+  // UUID = app_user_id, skip parse-token
+  const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (uuidRe.test(token)) {
+    state.token = token;
+    state.email = token;
+    document.getElementById('confirmEmail').textContent = token + '（app_user_id）';
+    showPanel(3);
+    btn.disabled = false; btn.innerHTML = '› 核对账户';
+    return;
+  }
+
+  try {
+    const res = await fetch(`${BASE}/api/parse-token`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ access_token: token })
+    });
+    const data = await res.json();
+    if (!data.success) {
+      setAlert('step2Alert','error', data.message || 'Token 无效或已过期');
+      return;
+    }
+    state.token = token;
+    state.email = data.message;
+    document.getElementById('confirmEmail').textContent = data.message;
+    showPanel(3);
+  } catch {
+    setAlert('step2Alert','error','网络错误，请重试');
+  } finally {
+    btn.disabled = false; btn.innerHTML = '› 核对账户';
+  }
+}
+
+async function doConfirm() {
+  const btn = document.getElementById('btnConfirm');
+  const backBtn = document.getElementById('btnBack3');
+  btn.disabled = true; backBtn.disabled = true;
+  btn.textContent = '提交中...';
+  setAlert('step3Alert','','');
+  document.getElementById('pollStatus').style.display = 'none';
+
+  try {
+    const res = await fetch(`${BASE}/api/tasks`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        card_key: state.card,
+        access_token: state.token,
+        idp: '',
+        force_recharge: document.getElementById('forceRecharge').checked
+      })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      startPolling(data.task_id, btn, backBtn);
+    } else if (res.status === 409) {
+      const match = data.error && data.error.match(/任务ID:\s*([a-f0-9-]+)/i);
+      if (match) {
+        startPolling(match[1], btn, backBtn);
+      } else {
+        setAlert('step3Alert','error', data.error || '提交失败');
+        btn.disabled = false; backBtn.disabled = false;
+        btn.innerHTML = '⚡ 确认充值';
+      }
+    } else {
+      setAlert('step3Alert','error', data.error || '提交失败');
+      btn.disabled = false; backBtn.disabled = false;
+      btn.innerHTML = '⚡ 确认充值';
+    }
+  } catch {
+    setAlert('step3Alert','error','网络错误，请重试');
+    btn.disabled = false; backBtn.disabled = false;
+    btn.innerHTML = '⚡ 确认充值';
+  }
+}
+
+function startPolling(taskId, btn, backBtn) {
+  showPollStatus('info','排队等待中...',true);
+  btn.innerHTML = '处理中...';
+  clearInterval(pollTimer);
+  pollTimer = setInterval(() => pollTask(taskId, btn, backBtn), 3000);
+}
+
+async function pollTask(taskId, btn, backBtn) {
+  try {
+    const res = await fetch(`${BASE}/api/tasks/${taskId}`);
+    const data = await res.json();
+
+    if (data.status === 'pending') {
+      const pos = data.queue_position ? `（排队第 ${data.queue_position} 位）` : '';
+      showPollStatus('info', `排队等待中${pos}...`, true);
+    } else if (data.status === 'processing') {
+      showPollStatus('info', '正在处理中，请稍候...', true);
+    } else if (data.status === 'completed') {
+      clearInterval(pollTimer);
+      showPollStatus('success', `充值成功！${data.result ? '<br>' + data.result : ''}`, false);
+      btn.textContent = '已完成';
+      btn.disabled = true;
+      backBtn.disabled = false;
+    } else if (data.status === 'failed') {
+      clearInterval(pollTimer);
+      showPollStatus('error', '充值失败：' + (data.error || '未知错误'), false);
+      btn.disabled = false; btn.innerHTML = '⚡ 重试';
+      backBtn.disabled = false;
+    } else if (data.status === 'cancelled') {
+      clearInterval(pollTimer);
+      showPollStatus('warn', '任务已取消', false);
+      btn.disabled = false; btn.innerHTML = '⚡ 确认充值';
+      backBtn.disabled = false;
+    } else {
+      clearInterval(pollTimer);
+      showPollStatus('error', '任务已过期或不存在，请联系客服', false);
+      btn.disabled = false; btn.innerHTML = '⚡ 确认充值';
+      backBtn.disabled = false;
+    }
+  } catch {
+    // 网络抖动，继续轮询
+  }
+}
+
+function showPollStatus(type, msg, progress) {
+  const el = document.getElementById('pollStatus');
+  el.style.display = '';
+  el.innerHTML = `<div class="alert alert-${type}">${msg}${progress ? '<div class="progress"><div class="progress-bar"></div></div>' : ''}</div>`;
+}
+</script>
+</body>
+</html>

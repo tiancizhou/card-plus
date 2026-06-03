@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qlcc</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #eef2f7;
+  --white: #fff;
+  --border: #dde3ed;
+  --accent: #6c63ff;
+  --accent2: #a78bfa;
+  --text: #1a1a2e;
+  --muted: #7a8599;
+  --success: #22c55e;
+  --error: #ef4444;
+  --warn: #f59e0b;
+  --info: #3b82f6;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 32px 16px;
+}
+.nav { display: flex; gap: 12px; margin-bottom: 24px; }
+.nav a {
+  color: var(--muted); text-decoration: none; font-size: 0.88rem;
+  padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border);
+  background: var(--white); transition: all 0.2s;
+}
+.nav a.active, .nav a:hover { color: var(--accent); border-color: var(--accent); }
+
+.header-card {
+  width: 100%; max-width: 860px;
+  background: var(--white); border-radius: 14px;
+  padding: 28px 24px 24px; text-align: center; margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.header-card h1 {
+  font-size: 2rem; font-weight: 700;
+  background: linear-gradient(135deg, #6c63ff, #a78bfa);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.header-card .underline {
+  width: 48px; height: 3px; margin: 8px auto 0;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 2px;
+}
+
+.main-card {
+  width: 100%; max-width: 860px;
+  background: var(--white); border-radius: 14px; padding: 28px 28px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+label.field-label {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.88rem; font-weight: 500; margin-bottom: 8px; color: var(--text);
+}
+label.field-label .req { color: var(--error); }
+textarea {
+  width: 100%; padding: 11px 14px;
+  border: 1px solid var(--border); border-radius: 8px;
+  font-size: 0.88rem; color: var(--text); background: var(--white);
+  outline: none; transition: border-color 0.2s; font-family: monospace;
+  resize: vertical; min-height: 100px;
+}
+textarea:focus { border-color: var(--accent); }
+.hint { font-size: 0.78rem; color: var(--muted); margin-top: 5px; }
+.hint a { color: var(--accent2); text-decoration: none; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 20px; border-radius: 8px; border: none;
+  font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+}
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-primary { background: linear-gradient(135deg, var(--accent), #8b5cf6); color: #fff; width: 100%; }
+.btn-primary:hover:not(:disabled) { opacity: 0.88; }
+
+#result { margin-top: 20px; }
+
+.alert { border-radius: 8px; padding: 10px 14px; font-size: 0.84rem; margin-bottom: 16px; }
+.alert-error { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); color: var(--error); }
+.alert-success { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.25); color: #16a34a; }
+.alert-info { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.25); color: #1d4ed8; }
+
+.info-block {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px;
+}
+.info-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 7px 0; border-bottom: 1px solid var(--border);
+  font-size: 0.875rem;
+}
+.info-row:last-child { border-bottom: none; }
+.info-label { color: var(--muted); flex-shrink: 0; margin-right: 12px; }
+.info-val { color: var(--text); text-align: right; word-break: break-all; }
+.badge {
+  display: inline-block; font-size: 0.72rem;
+  padding: 2px 8px; border-radius: 12px; font-weight: 600;
+}
+.badge-active { background: rgba(34,197,94,0.12); color: #16a34a; border: 1px solid rgba(34,197,94,0.3); }
+.badge-inactive { background: rgba(239,68,68,0.1); color: #dc2626; border: 1px solid rgba(239,68,68,0.3); }
+.badge-cancelled { background: rgba(245,158,11,0.12); color: #d97706; border: 1px solid rgba(245,158,11,0.3); }
+.section-title {
+  font-size: 0.8rem; font-weight: 600; color: var(--accent2);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin: 20px 0 10px;
+}
+.sub-card {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 16px; margin-bottom: 10px;
+}
+.sub-card .info-row { font-size: 0.83rem; }
+
+.loading-dots::after { content: ''; animation: dots 1.2s infinite; }
+@keyframes dots {
+  0%,20% { content: '.'; }
+  40%,60% { content: '..'; }
+  80%,100% { content: '...'; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html">卡密充值</a>
+  <a href="account.html" class="active">账号查询</a>
+</nav>
+
+<div class="header-card">
+  <h1>账号查询</h1>
+  <div class="underline"></div>
+</div>
+
+<div class="main-card">
+  <div>
+    <label class="field-label"><span>🔍</span> Access Token / Account ID <span class="req">*</span></label>
+    <textarea id="tokenInput" placeholder="粘贴 Access Token（eyJ...）、UUID 格式的 AccountID，或含 accessToken 字段的 JSON"></textarea>
+    <div class="hint">支持 JWT Token、Refresh Token、AccountID，以及包含 access_token 字段的 JSON 对象</div>
+  </div>
+  <button class="btn btn-primary" style="margin-top:16px" id="queryBtn" onclick="query()">查询订阅</button>
+  <div id="result"></div>
+</div>
+
+<script>
+const BASE = '';
+let lastCall = 0;
+
+async function query() {
+  const input = document.getElementById('tokenInput').value.trim();
+  if (!input) { setResult('error','请输入 Access Token 或 AccountID'); return; }
+
+  const now = Date.now();
+  const wait = 10000 - (now - lastCall);
+  if (wait > 0) {
+    setResult('error', `请求频繁，请等待 ${Math.ceil(wait/1000)} 秒后再试`);
+    return;
+  }
+
+  const btn = document.getElementById('queryBtn');
+  btn.disabled = true;
+  setResult('loading','查询中');
+  lastCall = Date.now();
+
+  try {
+    const res = await fetch(`${BASE}/api/check-account`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ input })
+    });
+    const data = await res.json();
+    if (!data.success) {
+      setResult('error', data.message || '查询失败');
+    } else {
+      renderResult(data);
+    }
+  } catch {
+    setResult('error','网络错误，请重试');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function setResult(type, msg) {
+  if (type === 'loading') {
+    document.getElementById('result').innerHTML =
+      `<div class="alert alert-info" style="margin-top:16px"><span class="loading-dots">${msg}</span></div>`;
+  } else {
+    document.getElementById('result').innerHTML =
+      `<div class="alert alert-${type}" style="margin-top:16px">${msg}</div>`;
+  }
+}
+
+function renderResult(data) {
+  const active = data.entitlements && data.entitlements.some(e => e.is_active);
+  const statusBadge = active
+    ? '<span class="badge badge-active">订阅有效</span>'
+    : '<span class="badge badge-inactive">无有效订阅</span>';
+
+  let html = `<div class="info-block" style="margin-top:16px">`;
+  if (data.email) html += row('邮箱', data.email);
+  html += row('Account ID', `<span style="font-family:monospace;font-size:0.8rem">${data.account_id || '-'}</span>`);
+  html += row('订阅状态', statusBadge);
+  html += `</div>`;
+
+  if (data.entitlements && data.entitlements.length > 0) {
+    html += `<div class="section-title">当前授权</div>`;
+    data.entitlements.forEach(e => {
+      html += `<div class="sub-card">`;
+      html += row('名称', e.name);
+      if (e.product_identifier) html += row('产品', e.product_identifier);
+      html += row('到期时间', e.expires_date || '-');
+      html += row('购买时间', e.purchase_date || '-');
+      html += row('状态', e.is_active
+        ? '<span class="badge badge-active">有效</span>'
+        : '<span class="badge badge-inactive">已过期</span>');
+      html += `</div>`;
+    });
+  }
+
+  if (data.subscriptions && data.subscriptions.length > 0) {
+    html += `<div class="section-title">订阅记录</div>`;
+    data.subscriptions.forEach(s => {
+      const label = s.is_refunded ? 'badge-inactive' : s.is_cancelled ? 'badge-cancelled' : s.is_active ? 'badge-active' : 'badge-inactive';
+      const text = s.is_refunded ? '已退款' : s.is_cancelled ? '已取消续订' : s.is_active ? '有效' : '已过期';
+      html += `<div class="sub-card">`;
+      html += row('产品', s.product_id);
+      html += row('渠道', s.store);
+      html += row('到期时间', s.expires_date);
+      html += row('价格', s.price_amount ? `${s.price_amount} ${s.price_currency}` : '-');
+      if (s.period_type) html += row('周期', s.period_type);
+      if (s.offer) html += row('优惠', s.offer);
+      html += row('首次购买', s.original_purchase_date || '-');
+      html += row('购买时间', s.purchase_date || '-');
+      if (s.refunded_at) html += row('退款时间', s.refunded_at);
+      if (s.billing_issues_detected_at) html += row('账单问题', s.billing_issues_detected_at);
+      html += row('状态', `<span class="badge ${label}">${text}</span>`);
+      html += `</div>`;
+    });
+  }
+
+  document.getElementById('result').innerHTML = html;
+}
+
+function row(label, val) {
+  return `<div class="info-row"><span class="info-label">${label}</span><span class="info-val">${val}</span></div>`;
+}
+</script>
+</body>
+</html>
