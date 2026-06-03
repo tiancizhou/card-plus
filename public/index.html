@@ -300,7 +300,12 @@ async function doStep1() {
       setAlert('step1Alert','error', data.error || '卡密不可用');
       return;
     }
-    if (data.available && data.product_api_type === 'claude') {
+    if (!data.available && data.used_email) {
+      setAlert('step1Alert','warn', `卡密已使用（${data.used_email}），可复用原账号继续充值`);
+    } else {
+      setAlert('step1Alert','success','卡密有效');
+    }
+    if (data.product_api_type === 'claude') {
       setAlert('step1Alert','error','暂不支持 Claude 产品充值');
       return;
     }

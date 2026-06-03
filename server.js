@@ -8,21 +8,21 @@ const UPSTREAM = 'https://api.987ai.vip';
 app.use(express.json({ limit: '10kb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Proxy all /api/* requests to upstream
 app.all('/api/*', async (req, res) => {
   const url = UPSTREAM + req.originalUrl;
+  console.log(`[proxy] ${req.method} ${req.originalUrl} -> ${url}`);
   try {
-    const opts = {
-      method: req.method,
-      headers: { 'Content-Type': 'application/json' },
-    };
-    if (req.method !== 'GET' && req.method !== 'DELETE') {
+    const opts = { method: req.method, headers: { 'Content-Type': 'application/json' } };
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
       opts.body = JSON.stringify(req.body);
     }
     const upstream = await fetch(url, opts);
-    const data = await upstream.json();
+    const text = await upstream.text();
+    let data;
+    try { data = JSON.parse(text); } catch { data = { error: text }; }
     res.status(upstream.status).json(data);
   } catch (err) {
+    console.error('[proxy] error:', err.message);
     res.status(502).json({ error: '上游服务不可达' });
   }
 });
