@@ -305,8 +305,7 @@ async function doStep1() {
         <div class="alert alert-warn" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.35)">
           <div style="font-weight:600;margin-bottom:4px">卡密已使用</div>
           <div style="font-size:0.82rem;margin-bottom:4px">充值账户：<span style="color:var(--accent)">${data.used_email}</span></div>
-          <div style="font-size:0.78rem;color:var(--warn);margin-bottom:12px">可使用已有记录重新充值，将向原账户重新发送凭证</div>
-          <button class="btn" style="width:100%;background:#f59e0b;color:#fff;padding:10px" onclick="proceedWithUsedCard()">使用已有记录充值</button>
+          <div style="font-size:0.78rem;color:var(--warn)">该卡密已被使用，如有疑问请联系客服</div>
         </div>`;
       state.card = code;
       document.getElementById('verifiedCardDisplay').textContent = '卡密: ' + code;
@@ -327,10 +326,6 @@ async function doStep1() {
   } finally {
     btn.disabled = false; btn.innerHTML = '<span>✓</span> 验证卡密';
   }
-}
-
-function proceedWithUsedCard() {
-  showPanel(2);
 }
 
 function renderStock(data) {
