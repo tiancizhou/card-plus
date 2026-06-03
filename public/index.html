@@ -7,17 +7,19 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #eef2f7;
-  --white: #fff;
-  --border: #dde3ed;
-  --accent: #6c63ff;
-  --accent2: #a78bfa;
-  --text: #1a1a2e;
-  --muted: #7a8599;
-  --success: #22c55e;
-  --error: #ef4444;
-  --warn: #f59e0b;
-  --info: #3b82f6;
+  --bg: #0d0d0d;
+  --card: #141414;
+  --card2: #1a1a1a;
+  --border: #2a2a2a;
+  --border2: #333;
+  --accent: #d4a017;
+  --accent2: #f0c040;
+  --text: #e8e0d0;
+  --muted: #6b6560;
+  --success: #4ade80;
+  --error: #f87171;
+  --warn: #fbbf24;
+  --info: #60a5fa;
 }
 body {
   background: var(--bg);
@@ -26,111 +28,137 @@ body {
   min-height: 100vh;
   display: flex; flex-direction: column; align-items: center;
   padding: 32px 16px;
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(212,160,23,0.06) 0%, transparent 60%);
 }
-.nav { display: flex; gap: 12px; margin-bottom: 24px; }
+
+.nav { display: flex; gap: 10px; margin-bottom: 28px; }
 .nav a {
-  color: var(--muted); text-decoration: none; font-size: 0.88rem;
-  padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border);
-  background: var(--white); transition: all 0.2s;
+  color: var(--muted); text-decoration: none; font-size: 0.85rem;
+  padding: 5px 16px; border-radius: 20px;
+  border: 1px solid var(--border2);
+  background: var(--card); transition: all 0.2s; letter-spacing: 0.03em;
 }
-.nav a.active, .nav a:hover { color: var(--accent); border-color: var(--accent); }
+.nav a.active, .nav a:hover {
+  color: var(--accent); border-color: var(--accent);
+  background: rgba(212,160,23,0.08);
+}
 
 .header-card {
-  width: 100%; max-width: 860px;
-  background: var(--white); border-radius: 14px;
-  padding: 28px 24px 24px; text-align: center; margin-bottom: 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  width: 100%; max-width: 780px;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 32px 24px 28px; text-align: center; margin-bottom: 16px;
+  box-shadow: 0 0 40px rgba(212,160,23,0.05);
 }
 .header-card h1 {
-  font-size: 2rem; font-weight: 700;
-  background: linear-gradient(135deg, #6c63ff, #a78bfa);
+  font-size: 2.2rem; font-weight: 700; letter-spacing: 0.06em;
+  background: linear-gradient(135deg, #d4a017, #f0c040, #b8860b);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
 .header-card .underline {
-  width: 48px; height: 3px; margin: 8px auto 0;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
-  border-radius: 2px;
+  width: 56px; height: 2px; margin: 10px auto 0;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
 }
 
 .stock-badge {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 4px 12px; border-radius: 20px; font-size: 0.8rem;
-  margin-bottom: 16px; font-weight: 500;
+  padding: 4px 14px; border-radius: 20px; font-size: 0.78rem;
+  margin-bottom: 16px; font-weight: 500; letter-spacing: 0.04em;
 }
-.stock-badge.high { background: rgba(34,197,94,0.12); color: #16a34a; border: 1px solid rgba(34,197,94,0.3); }
-.stock-badge.low  { background: rgba(245,158,11,0.12); color: #d97706; border: 1px solid rgba(245,158,11,0.3); }
-.stock-badge.none { background: rgba(239,68,68,0.12);  color: #dc2626; border: 1px solid rgba(239,68,68,0.3); }
-.stock-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.stock-badge.high { background: rgba(74,222,128,0.08); color: #4ade80; border: 1px solid rgba(74,222,128,0.25); }
+.stock-badge.low  { background: rgba(251,191,36,0.08); color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
+.stock-badge.none { background: rgba(248,113,113,0.08); color: #f87171; border: 1px solid rgba(248,113,113,0.25); }
+.stock-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
-.steps { display: flex; align-items: center; margin-bottom: 24px; }
+.steps { display: flex; align-items: center; margin-bottom: 28px; }
 .step {
   flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;
-  padding: 12px 8px; border-radius: 10px; border: 1px solid var(--border);
-  cursor: default; transition: all 0.25s; background: var(--white);
+  padding: 12px 8px; border-radius: 10px;
+  border: 1px solid var(--border);
+  cursor: default; transition: all 0.25s;
+  background: var(--card2);
 }
-.step.active { border-color: var(--accent); background: rgba(108,99,255,0.05); }
-.step.done   { border-color: var(--accent); background: rgba(108,99,255,0.04); }
+.step.active { border-color: var(--accent); background: rgba(212,160,23,0.06); }
+.step.done   { border-color: rgba(212,160,23,0.4); background: rgba(212,160,23,0.04); }
 .step-num {
   width: 28px; height: 28px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.85rem; font-weight: 700;
-  background: var(--border); color: var(--muted);
+  font-size: 0.82rem; font-weight: 700;
+  background: var(--border2); color: var(--muted);
 }
-.step.active .step-num, .step.done .step-num { background: var(--accent); color: #fff; }
-.step-label { font-size: 0.78rem; color: var(--muted); }
+.step.active .step-num, .step.done .step-num {
+  background: linear-gradient(135deg, #d4a017, #f0c040); color: #0d0d0d;
+}
+.step-label { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.03em; }
 .step.active .step-label, .step.done .step-label { color: var(--accent); }
-.step-connector { width: 32px; height: 2px; background: var(--border); flex-shrink: 0; }
+.step-connector { width: 32px; height: 1px; background: var(--border2); flex-shrink: 0; }
 .step-connector.done { background: var(--accent); }
 
 .main-card {
-  width: 100%; max-width: 860px;
-  background: var(--white); border-radius: 14px; padding: 28px 28px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  width: 100%; max-width: 780px;
+  background: var(--card); border: 1px solid var(--border2);
+  border-radius: 16px; padding: 28px;
+  box-shadow: 0 0 40px rgba(0,0,0,0.4);
 }
 
 label.field-label {
   display: flex; align-items: center; gap: 6px;
-  font-size: 0.88rem; font-weight: 500; margin-bottom: 8px; color: var(--text);
+  font-size: 0.85rem; font-weight: 500; margin-bottom: 8px; color: var(--text);
+  letter-spacing: 0.02em;
 }
-label.field-label .req { color: var(--error); }
+label.field-label .req { color: var(--accent); }
 input[type=text], textarea {
   width: 100%; padding: 11px 14px;
-  border: 1px solid var(--border); border-radius: 8px;
-  font-size: 0.92rem; color: var(--text); background: var(--white);
+  border: 1px solid var(--border2); border-radius: 8px;
+  font-size: 0.9rem; color: var(--text);
+  background: var(--bg);
   outline: none; transition: border-color 0.2s; font-family: inherit;
 }
-input[type=text]:focus, textarea:focus { border-color: var(--accent); }
+input[type=text]:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(212,160,23,0.12); }
 textarea { resize: vertical; min-height: 110px; }
 .field { margin-bottom: 20px; }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 12px 20px; border-radius: 8px; border: none;
-  font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
-  text-decoration: none;
+  font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  text-decoration: none; letter-spacing: 0.04em;
 }
-.btn:disabled { opacity: 0.45; cursor: not-allowed; }
-.btn-primary { background: linear-gradient(135deg, var(--accent), #8b5cf6); color: #fff; width: 100%; }
-.btn-primary:hover:not(:disabled) { opacity: 0.88; }
-.btn-success { background: #22c55e; color: #fff; }
-.btn-success:hover { opacity: 0.88; }
-.btn-blue { background: var(--info); color: #fff; }
-.btn-blue:hover { opacity: 0.88; }
-.btn-gray { background: #e5e7eb; color: var(--muted); flex: 1; }
-.btn-gray:hover { background: #d1d5db; }
-.btn-confirm { background: #22c55e; color: #fff; flex: 2; }
-.btn-confirm:hover:not(:disabled) { opacity: 0.88; }
-.btn-row { display: flex; gap: 12px; margin-top: 4px; }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.btn-primary {
+  background: linear-gradient(135deg, #d4a017, #c8930e);
+  color: #0d0d0d; width: 100%;
+  box-shadow: 0 2px 16px rgba(212,160,23,0.25);
+}
+.btn-primary:hover:not(:disabled) { background: linear-gradient(135deg, #e6b020, #d4a017); box-shadow: 0 4px 24px rgba(212,160,23,0.35); }
+.btn-success { background: #166534; color: #4ade80; border: 1px solid #166534; }
+.btn-success:hover { background: #15803d; }
+.btn-blue { background: #1e3a5f; color: #60a5fa; border: 1px solid #1e40af; }
+.btn-blue:hover { background: #1e40af; }
+.btn-gray { background: var(--card2); color: var(--muted); border: 1px solid var(--border2); flex: 1; }
+.btn-gray:hover { border-color: var(--accent); color: var(--accent); }
+.btn-confirm {
+  background: linear-gradient(135deg, #d4a017, #c8930e);
+  color: #0d0d0d; flex: 2;
+  box-shadow: 0 2px 16px rgba(212,160,23,0.2);
+}
+.btn-confirm:hover:not(:disabled) { box-shadow: 0 4px 24px rgba(212,160,23,0.35); }
+.btn-row { display: flex; gap: 10px; margin-top: 4px; }
 
-.info-box { border: 1px solid #c7d7f5; background: #eff6ff; border-radius: 10px; padding: 14px 16px; margin-bottom: 20px; }
-.info-box .info-title { display: flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 600; color: var(--info); margin-bottom: 4px; }
-.info-box .info-val { font-size: 0.85rem; color: var(--muted); }
+.info-box {
+  border: 1px solid rgba(212,160,23,0.25);
+  background: rgba(212,160,23,0.05);
+  border-radius: 10px; padding: 14px 16px; margin-bottom: 20px;
+}
+.info-box .info-title { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
+.info-box .info-val { font-size: 0.83rem; color: var(--muted); }
 
-.confirm-box { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
-.confirm-title { padding: 12px 16px; font-weight: 600; font-size: 0.9rem; border-bottom: 1px solid var(--border); }
+.confirm-box { border: 1px solid var(--border2); border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+.confirm-title { padding: 12px 16px; font-weight: 600; font-size: 0.88rem; border-bottom: 1px solid var(--border2); color: var(--accent); letter-spacing: 0.04em; }
 .confirm-row {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 0.88rem;
+  padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 0.86rem;
 }
 .confirm-row:last-child { border-bottom: none; }
 .confirm-row .label { color: var(--muted); }
@@ -138,17 +166,17 @@ textarea { resize: vertical; min-height: 110px; }
 
 .override-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px; }
 .override-row input[type=checkbox] { margin-top: 3px; width: 15px; height: 15px; accent-color: var(--accent); }
-.override-desc { font-size: 0.85rem; }
-.override-desc strong { display: block; margin-bottom: 2px; }
-.override-desc span { color: var(--warn); font-size: 0.8rem; }
+.override-desc { font-size: 0.84rem; }
+.override-desc strong { display: block; margin-bottom: 2px; color: var(--text); }
+.override-desc span { color: var(--warn); font-size: 0.78rem; }
 
-.alert { border-radius: 8px; padding: 10px 14px; font-size: 0.84rem; margin-bottom: 16px; }
-.alert-error { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); color: var(--error); }
-.alert-success { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.25); color: #16a34a; }
-.alert-warn { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: #92400e; }
-.alert-info { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.25); color: #1d4ed8; }
+.alert { border-radius: 8px; padding: 10px 14px; font-size: 0.83rem; margin-bottom: 16px; line-height: 1.6; }
+.alert-error { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); color: #fca5a5; }
+.alert-success { background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.2); color: #86efac; }
+.alert-warn { background: rgba(251,191,36,0.07); border: 1px solid rgba(251,191,36,0.2); color: #fde68a; }
+.alert-info { background: rgba(96,165,250,0.07); border: 1px solid rgba(96,165,250,0.2); color: #93c5fd; }
 
-.progress { background: var(--border); border-radius: 4px; height: 4px; overflow: hidden; margin-top: 12px; }
+.progress { background: var(--border2); border-radius: 4px; height: 3px; overflow: hidden; margin-top: 10px; }
 .progress-bar {
   height: 100%; width: 30%;
   background: linear-gradient(90deg, var(--accent), var(--accent2));
@@ -158,10 +186,11 @@ textarea { resize: vertical; min-height: 110px; }
 @keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(400%); } }
 
 .guide-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-.guide-label { font-size: 0.88rem; font-weight: 600; white-space: nowrap; min-width: 56px; }
-.hint-text { font-size: 0.78rem; color: var(--warn); margin-top: 6px; }
-.hint-text a { color: var(--accent); text-decoration: none; }
-.hint-small { font-size: 0.78rem; color: var(--muted); margin-top: 5px; }
+.guide-label { font-size: 0.85rem; font-weight: 600; white-space: nowrap; min-width: 60px; color: var(--accent); }
+.hint-text { font-size: 0.77rem; color: var(--warn); margin-top: 6px; opacity: 0.85; }
+.hint-text a { color: var(--accent2); text-decoration: none; }
+.hint-small { font-size: 0.77rem; color: var(--muted); margin-top: 5px; }
+.sep { height: 1px; background: var(--border); margin: 20px 0; }
 </style>
 </head>
 <body>
@@ -176,7 +205,7 @@ textarea { resize: vertical; min-height: 110px; }
   <div class="underline"></div>
 </div>
 
-<div style="width:100%;max-width:860px;margin-bottom:12px">
+<div style="width:100%;max-width:780px;margin-bottom:12px">
   <span id="stockBadge" class="stock-badge" style="display:none"></span>
 </div>
 
@@ -202,19 +231,19 @@ textarea { resize: vertical; min-height: 110px; }
   <!-- Step 2 -->
   <div id="panel2" style="display:none">
     <div class="info-box">
-      <div class="info-title"><span>ℹ️</span> 已验证卡密</div>
+      <div class="info-title"><span>✦</span> 已验证卡密</div>
       <div class="info-val" id="verifiedCardDisplay"></div>
     </div>
     <div class="guide-row">
-      <span class="guide-label">⚡ 第一步：</span>
+      <span class="guide-label">第一步：</span>
       <a class="btn btn-success" href="https://chatgpt.com" target="_blank"><span>↗</span> 点我登录GPT</a>
     </div>
     <div class="guide-row">
-      <span class="guide-label">⚡ 第二步：</span>
+      <span class="guide-label">第二步：</span>
       <a class="btn btn-blue" href="https://chatgpt.com/api/auth/session" target="_blank"><span>↗</span> 点我获取充值密钥</a>
     </div>
     <div class="hint-text">⚠ 如果返回充值密钥是空的，则登录不成功，<a href="https://chatgpt.com" target="_blank">请重新登录</a></div>
-    <div class="field" style="margin-top:16px">
+    <div class="field" style="margin-top:18px">
       <label class="field-label"><span>🔒</span> 第三步：输入充值密钥 <span class="req">*</span></label>
       <textarea id="accessToken" placeholder="请将上方返回的全部充值密钥复制至此处"></textarea>
       <div class="hint-small">ℹ 本站支持输入 account_id 或 rt 充值</div>
@@ -230,14 +259,14 @@ textarea { resize: vertical; min-height: 110px; }
   <div id="panel3" style="display:none">
     <div class="confirm-box">
       <div class="confirm-title">确认充值信息</div>
-      <div class="confirm-row"><span class="label">账户邮箱：</span><span class="val" id="confirmEmail"></span></div>
-      <div class="confirm-row"><span class="label">卡密：</span><span class="val" id="confirmCard"></span></div>
+      <div class="confirm-row"><span class="label">账户邮箱</span><span class="val" id="confirmEmail"></span></div>
+      <div class="confirm-row"><span class="label">卡密</span><span class="val" id="confirmCard"></span></div>
     </div>
     <div class="override-row">
       <input type="checkbox" id="forceRecharge">
       <div class="override-desc">
         <strong>覆盖充值</strong>
-        <span>勾选后，即使账户已是Plus也会充值<br>不累加时间，开始新的一个月</span>
+        <span>勾选后，即使账户已是Plus也会充值，不累加时间，开始新的一个月</span>
       </div>
     </div>
     <div id="step3Alert"></div>
@@ -272,11 +301,9 @@ function setAlert(id, type, msg) {
   document.getElementById(id).innerHTML = msg ? `<div class="alert alert-${type}">${msg}</div>` : '';
 }
 
-// Extract access_token from user paste (raw JWT, UUID, JSON with accessToken field, or rt)
 function extractToken(raw) {
   raw = raw.trim();
   if (!raw) return '';
-  // JSON object with accessToken / access_token / token field
   if (raw.startsWith('{')) {
     try {
       const obj = JSON.parse(raw);
@@ -302,10 +329,10 @@ async function doStep1() {
     }
     if (!data.available && data.used_email) {
       document.getElementById('step1Alert').innerHTML = `
-        <div class="alert alert-warn" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.35)">
+        <div class="alert alert-warn">
           <div style="font-weight:600;margin-bottom:4px">卡密已使用</div>
-          <div style="font-size:0.82rem;margin-bottom:4px">充值账户：<span style="color:var(--accent)">${data.used_email}</span></div>
-          <div style="font-size:0.78rem;color:var(--warn)">该卡密已被使用，如有疑问请联系客服</div>
+          <div style="font-size:0.82rem;margin-bottom:2px">充值账户：<span style="color:var(--accent)">${data.used_email}</span></div>
+          <div style="font-size:0.77rem;opacity:0.8">该卡密已被使用，如有疑问请联系客服</div>
         </div>`;
       state.card = code;
       document.getElementById('verifiedCardDisplay').textContent = '卡密: ' + code;
@@ -346,7 +373,6 @@ async function doStep2() {
   btn.disabled = true; btn.textContent = '核对中...';
   setAlert('step2Alert','','');
 
-  // UUID = app_user_id, skip parse-token
   const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   if (uuidRe.test(token)) {
     state.token = token;
@@ -399,27 +425,19 @@ async function doConfirm() {
       })
     });
     const data = await res.json();
-
     if (data.success) {
       startPolling(data.task_id, btn, backBtn);
     } else if (res.status === 409) {
       const match = data.error && data.error.match(/任务ID:\s*([a-f0-9-]+)/i);
-      if (match) {
-        startPolling(match[1], btn, backBtn);
-      } else {
-        setAlert('step3Alert','error', data.error || '提交失败');
-        btn.disabled = false; backBtn.disabled = false;
-        btn.innerHTML = '⚡ 确认充值';
-      }
+      if (match) { startPolling(match[1], btn, backBtn); }
+      else { setAlert('step3Alert','error', data.error||'提交失败'); btn.disabled=false; backBtn.disabled=false; btn.innerHTML='⚡ 确认充值'; }
     } else {
-      setAlert('step3Alert','error', data.error || '提交失败');
-      btn.disabled = false; backBtn.disabled = false;
-      btn.innerHTML = '⚡ 确认充值';
+      setAlert('step3Alert','error', data.error||'提交失败');
+      btn.disabled=false; backBtn.disabled=false; btn.innerHTML='⚡ 确认充值';
     }
   } catch {
     setAlert('step3Alert','error','网络错误，请重试');
-    btn.disabled = false; backBtn.disabled = false;
-    btn.innerHTML = '⚡ 确认充值';
+    btn.disabled=false; backBtn.disabled=false; btn.innerHTML='⚡ 确认充值';
   }
 }
 
@@ -434,7 +452,6 @@ async function pollTask(taskId, btn, backBtn) {
   try {
     const res = await fetch(`${BASE}/api/tasks/${taskId}`);
     const data = await res.json();
-
     if (data.status === 'pending') {
       const pos = data.queue_position ? `（排队第 ${data.queue_position} 位）` : '';
       showPollStatus('info', `排队等待中${pos}...`, true);
@@ -443,28 +460,21 @@ async function pollTask(taskId, btn, backBtn) {
     } else if (data.status === 'completed') {
       clearInterval(pollTimer);
       showPollStatus('success', `充值成功！${data.result ? '<br>' + data.result : ''}`, false);
-      btn.textContent = '已完成';
-      btn.disabled = true;
-      backBtn.disabled = false;
+      btn.textContent = '已完成'; btn.disabled = true; backBtn.disabled = false;
     } else if (data.status === 'failed') {
       clearInterval(pollTimer);
       showPollStatus('error', '充值失败：' + (data.error || '未知错误'), false);
-      btn.disabled = false; btn.innerHTML = '⚡ 重试';
-      backBtn.disabled = false;
+      btn.disabled=false; btn.innerHTML='⚡ 重试'; backBtn.disabled=false;
     } else if (data.status === 'cancelled') {
       clearInterval(pollTimer);
       showPollStatus('warn', '任务已取消', false);
-      btn.disabled = false; btn.innerHTML = '⚡ 确认充值';
-      backBtn.disabled = false;
+      btn.disabled=false; btn.innerHTML='⚡ 确认充值'; backBtn.disabled=false;
     } else {
       clearInterval(pollTimer);
       showPollStatus('error', '任务已过期或不存在，请联系客服', false);
-      btn.disabled = false; btn.innerHTML = '⚡ 确认充值';
-      backBtn.disabled = false;
+      btn.disabled=false; btn.innerHTML='⚡ 确认充值'; backBtn.disabled=false;
     }
-  } catch {
-    // 网络抖动，继续轮询
-  }
+  } catch {}
 }
 
 function showPollStatus(type, msg, progress) {

@@ -7,17 +7,19 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #eef2f7;
-  --white: #fff;
-  --border: #dde3ed;
-  --accent: #6c63ff;
-  --accent2: #a78bfa;
-  --text: #1a1a2e;
-  --muted: #7a8599;
-  --success: #22c55e;
-  --error: #ef4444;
-  --warn: #f59e0b;
-  --info: #3b82f6;
+  --bg: #0d0d0d;
+  --card: #141414;
+  --card2: #1a1a1a;
+  --border: #2a2a2a;
+  --border2: #333;
+  --accent: #d4a017;
+  --accent2: #f0c040;
+  --text: #e8e0d0;
+  --muted: #6b6560;
+  --success: #4ade80;
+  --error: #f87171;
+  --warn: #fbbf24;
+  --info: #60a5fa;
 }
 body {
   background: var(--bg);
@@ -26,105 +28,180 @@ body {
   min-height: 100vh;
   display: flex; flex-direction: column; align-items: center;
   padding: 32px 16px;
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(212,160,23,0.06) 0%, transparent 60%);
 }
-.nav { display: flex; gap: 12px; margin-bottom: 24px; }
+
+.nav { display: flex; gap: 10px; margin-bottom: 28px; }
 .nav a {
-  color: var(--muted); text-decoration: none; font-size: 0.88rem;
-  padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border);
-  background: var(--white); transition: all 0.2s;
+  color: var(--muted); text-decoration: none; font-size: 0.85rem;
+  padding: 5px 16px; border-radius: 20px;
+  border: 1px solid var(--border2);
+  background: var(--card); transition: all 0.2s; letter-spacing: 0.03em;
 }
-.nav a.active, .nav a:hover { color: var(--accent); border-color: var(--accent); }
+.nav a.active, .nav a:hover {
+  color: var(--accent); border-color: var(--accent);
+  background: rgba(212,160,23,0.08);
+}
 
 .header-card {
-  width: 100%; max-width: 860px;
-  background: var(--white); border-radius: 14px;
-  padding: 28px 24px 24px; text-align: center; margin-bottom: 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  width: 100%; max-width: 780px;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 32px 24px 28px; text-align: center; margin-bottom: 16px;
+  box-shadow: 0 0 40px rgba(212,160,23,0.05);
 }
 .header-card h1 {
-  font-size: 2rem; font-weight: 700;
-  background: linear-gradient(135deg, #6c63ff, #a78bfa);
+  font-size: 2.2rem; font-weight: 700; letter-spacing: 0.06em;
+  background: linear-gradient(135deg, #d4a017, #f0c040, #b8860b);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
 .header-card .underline {
-  width: 48px; height: 3px; margin: 8px auto 0;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
-  border-radius: 2px;
+  width: 56px; height: 2px; margin: 10px auto 0;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
 }
 
 .main-card {
-  width: 100%; max-width: 860px;
-  background: var(--white); border-radius: 14px; padding: 28px 28px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  width: 100%; max-width: 780px;
+  background: var(--card); border: 1px solid var(--border2);
+  border-radius: 16px; padding: 28px;
+  box-shadow: 0 0 40px rgba(0,0,0,0.4);
 }
 
 label.field-label {
   display: flex; align-items: center; gap: 6px;
-  font-size: 0.88rem; font-weight: 500; margin-bottom: 8px; color: var(--text);
+  font-size: 0.85rem; font-weight: 500; margin-bottom: 8px; color: var(--text);
+  letter-spacing: 0.02em;
 }
-label.field-label .req { color: var(--error); }
+label.field-label .req { color: var(--accent); }
 textarea {
   width: 100%; padding: 11px 14px;
-  border: 1px solid var(--border); border-radius: 8px;
-  font-size: 0.88rem; color: var(--text); background: var(--white);
+  border: 1px solid var(--border2); border-radius: 8px;
+  font-size: 0.88rem; color: var(--text);
+  background: var(--bg);
   outline: none; transition: border-color 0.2s; font-family: monospace;
   resize: vertical; min-height: 100px;
 }
-textarea:focus { border-color: var(--accent); }
-.hint { font-size: 0.78rem; color: var(--muted); margin-top: 5px; }
+textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(212,160,23,0.12); }
+.hint { font-size: 0.77rem; color: var(--muted); margin-top: 5px; }
 .hint a { color: var(--accent2); text-decoration: none; }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 12px 20px; border-radius: 8px; border: none;
-  font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+  font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  letter-spacing: 0.04em;
 }
-.btn:disabled { opacity: 0.45; cursor: not-allowed; }
-.btn-primary { background: linear-gradient(135deg, var(--accent), #8b5cf6); color: #fff; width: 100%; }
-.btn-primary:hover:not(:disabled) { opacity: 0.88; }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.btn-primary {
+  background: linear-gradient(135deg, #d4a017, #c8930e);
+  color: #0d0d0d; width: 100%;
+  box-shadow: 0 2px 16px rgba(212,160,23,0.25);
+}
+.btn-primary:hover:not(:disabled) { background: linear-gradient(135deg, #e6b020, #d4a017); box-shadow: 0 4px 24px rgba(212,160,23,0.35); }
 
 #result { margin-top: 20px; }
 
-.alert { border-radius: 8px; padding: 10px 14px; font-size: 0.84rem; margin-bottom: 16px; }
-.alert-error { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); color: var(--error); }
-.alert-success { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.25); color: #16a34a; }
-.alert-info { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.25); color: #1d4ed8; }
+.alert { border-radius: 8px; padding: 10px 14px; font-size: 0.83rem; margin-bottom: 16px; line-height: 1.6; }
+.alert-error { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); color: #fca5a5; }
+.alert-success { background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.2); color: #86efac; }
+.alert-info { background: rgba(96,165,250,0.07); border: 1px solid rgba(96,165,250,0.2); color: #93c5fd; }
 
-.info-block {
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: 12px; padding: 20px;
+/* Account info section */
+.account-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 20px; margin-bottom: 16px;
+  background: linear-gradient(135deg, rgba(212,160,23,0.08), rgba(212,160,23,0.02));
+  border: 1px solid rgba(212,160,23,0.2);
+  border-radius: 12px;
 }
-.info-row {
-  display: flex; justify-content: space-between; align-items: baseline;
-  padding: 7px 0; border-bottom: 1px solid var(--border);
-  font-size: 0.875rem;
+.account-header .avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, #d4a017, #b8860b);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; color: #0d0d0d; font-weight: 700; flex-shrink: 0;
 }
-.info-row:last-child { border-bottom: none; }
-.info-label { color: var(--muted); flex-shrink: 0; margin-right: 12px; }
-.info-val { color: var(--text); text-align: right; word-break: break-all; }
+.account-header .account-meta { flex: 1; min-width: 0; }
+.account-header .email {
+  font-size: 0.92rem; font-weight: 600; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.account-header .account-id {
+  font-size: 0.75rem; color: var(--muted); font-family: monospace;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;
+}
+
+.section-title {
+  font-size: 0.78rem; font-weight: 600; color: var(--accent);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin: 24px 0 10px; padding-left: 2px;
+}
+
+.entitlement-card {
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 18px; margin-bottom: 10px;
+  position: relative; overflow: hidden;
+}
+.entitlement-card.active {
+  border-color: rgba(74,222,128,0.25);
+  background: linear-gradient(135deg, rgba(74,222,128,0.04), var(--card2));
+}
+.entitlement-card.expired {
+  border-color: var(--border);
+  opacity: 0.7;
+}
+.entitlement-card .ent-name {
+  font-size: 0.9rem; font-weight: 600; color: var(--text); margin-bottom: 10px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.entitlement-card .ent-details { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; }
+.entitlement-card .ent-detail { font-size: 0.8rem; }
+.entitlement-card .ent-detail .label { color: var(--muted); }
+.entitlement-card .ent-detail .val { color: var(--text); margin-top: 1px; word-break: break-all; }
+
+.sub-card {
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 18px; margin-bottom: 10px;
+}
+.sub-card .sub-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border);
+}
+.sub-card .sub-product { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+.sub-card .sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; }
+.sub-card .sub-detail { font-size: 0.8rem; }
+.sub-card .sub-detail .label { color: var(--muted); }
+.sub-card .sub-detail .val { color: var(--text); margin-top: 1px; word-break: break-all; }
+
 .badge {
   display: inline-block; font-size: 0.72rem;
-  padding: 2px 8px; border-radius: 12px; font-weight: 600;
+  padding: 2px 10px; border-radius: 12px; font-weight: 600;
+  letter-spacing: 0.02em;
 }
-.badge-active { background: rgba(34,197,94,0.12); color: #16a34a; border: 1px solid rgba(34,197,94,0.3); }
-.badge-inactive { background: rgba(239,68,68,0.1); color: #dc2626; border: 1px solid rgba(239,68,68,0.3); }
-.badge-cancelled { background: rgba(245,158,11,0.12); color: #d97706; border: 1px solid rgba(245,158,11,0.3); }
-.section-title {
-  font-size: 0.8rem; font-weight: 600; color: var(--accent2);
-  text-transform: uppercase; letter-spacing: 0.08em;
-  margin: 20px 0 10px;
+.badge-active { background: rgba(74,222,128,0.1); color: #4ade80; border: 1px solid rgba(74,222,128,0.25); }
+.badge-inactive { background: rgba(248,113,113,0.08); color: #f87171; border: 1px solid rgba(248,113,113,0.2); }
+.badge-cancelled { background: rgba(251,191,36,0.08); color: #fbbf24; border: 1px solid rgba(251,191,36,0.2); }
+
+.progress { background: var(--border2); border-radius: 4px; height: 3px; overflow: hidden; margin-top: 10px; }
+.progress-bar {
+  height: 100%; width: 30%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 4px;
+  animation: slide 1.4s ease-in-out infinite;
 }
-.sub-card {
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: 10px; padding: 14px 16px; margin-bottom: 10px;
-}
-.sub-card .info-row { font-size: 0.83rem; }
+@keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(400%); } }
 
 .loading-dots::after { content: ''; animation: dots 1.2s infinite; }
 @keyframes dots {
   0%,20% { content: '.'; }
   40%,60% { content: '..'; }
   80%,100% { content: '...'; }
+}
+
+@media (max-width: 500px) {
+  .entitlement-card .ent-details, .sub-card .sub-grid { grid-template-columns: 1fr; }
+  .account-header { flex-direction: column; text-align: center; }
+  .account-header .email, .account-header .account-id { text-align: center; }
 }
 </style>
 </head>
@@ -192,7 +269,7 @@ async function query() {
 function setResult(type, msg) {
   if (type === 'loading') {
     document.getElementById('result').innerHTML =
-      `<div class="alert alert-info" style="margin-top:16px"><span class="loading-dots">${msg}</span></div>`;
+      `<div class="alert alert-info" style="margin-top:16px"><span class="loading-dots">${msg}</span><div class="progress"><div class="progress-bar"></div></div></div>`;
   } else {
     document.getElementById('result').innerHTML =
       `<div class="alert alert-${type}" style="margin-top:16px">${msg}</div>`;
@@ -205,24 +282,30 @@ function renderResult(data) {
     ? '<span class="badge badge-active">订阅有效</span>'
     : '<span class="badge badge-inactive">无有效订阅</span>';
 
-  let html = `<div class="info-block" style="margin-top:16px">`;
-  if (data.email) html += row('邮箱', data.email);
-  html += row('Account ID', `<span style="font-family:monospace;font-size:0.8rem">${data.account_id || '-'}</span>`);
-  html += row('订阅状态', statusBadge);
-  html += `</div>`;
+  const email = data.email || '-';
+  const initial = email !== '-' ? email[0].toUpperCase() : '?';
+
+  let html = `<div class="account-header" style="margin-top:16px">`;
+  html += `<div class="avatar">${initial}</div>`;
+  html += `<div class="account-meta">`;
+  html += `<div class="email">${email} ${statusBadge}</div>`;
+  if (data.account_id) html += `<div class="account-id">${data.account_id}</div>`;
+  html += `</div></div>`;
 
   if (data.entitlements && data.entitlements.length > 0) {
     html += `<div class="section-title">当前授权</div>`;
     data.entitlements.forEach(e => {
-      html += `<div class="sub-card">`;
-      html += row('名称', e.name);
-      if (e.product_identifier) html += row('产品', e.product_identifier);
-      html += row('到期时间', e.expires_date || '-');
-      html += row('购买时间', e.purchase_date || '-');
-      html += row('状态', e.is_active
+      const cls = e.is_active ? 'active' : 'expired';
+      const statusBadge = e.is_active
         ? '<span class="badge badge-active">有效</span>'
-        : '<span class="badge badge-inactive">已过期</span>');
-      html += `</div>`;
+        : '<span class="badge badge-inactive">已过期</span>';
+      html += `<div class="entitlement-card ${cls}">`;
+      html += `<div class="ent-name"><span>${e.name || '-'}</span>${statusBadge}</div>`;
+      html += `<div class="ent-details">`;
+      if (e.product_identifier) html += entDetail('产品', e.product_identifier);
+      html += entDetail('到期时间', e.expires_date || '-');
+      html += entDetail('购买时间', e.purchase_date || '-');
+      html += `</div></div>`;
     });
   }
 
@@ -232,26 +315,30 @@ function renderResult(data) {
       const label = s.is_refunded ? 'badge-inactive' : s.is_cancelled ? 'badge-cancelled' : s.is_active ? 'badge-active' : 'badge-inactive';
       const text = s.is_refunded ? '已退款' : s.is_cancelled ? '已取消续订' : s.is_active ? '有效' : '已过期';
       html += `<div class="sub-card">`;
-      html += row('产品', s.product_id);
-      html += row('渠道', s.store);
-      html += row('到期时间', s.expires_date);
-      html += row('价格', s.price_amount ? `${s.price_amount} ${s.price_currency}` : '-');
-      if (s.period_type) html += row('周期', s.period_type);
-      if (s.offer) html += row('优惠', s.offer);
-      html += row('首次购买', s.original_purchase_date || '-');
-      html += row('购买时间', s.purchase_date || '-');
-      if (s.refunded_at) html += row('退款时间', s.refunded_at);
-      if (s.billing_issues_detected_at) html += row('账单问题', s.billing_issues_detected_at);
-      html += row('状态', `<span class="badge ${label}">${text}</span>`);
-      html += `</div>`;
+      html += `<div class="sub-header"><span class="sub-product">${s.product_id || '-'}</span><span class="badge ${label}">${text}</span></div>`;
+      html += `<div class="sub-grid">`;
+      html += subDetail('渠道', s.store || '-');
+      html += subDetail('到期时间', s.expires_date || '-');
+      html += subDetail('价格', s.price_amount ? `${s.price_amount} ${s.price_currency}` : '-');
+      if (s.period_type) html += subDetail('周期', s.period_type);
+      if (s.offer) html += subDetail('优惠', s.offer);
+      html += subDetail('首次购买', s.original_purchase_date || '-');
+      html += subDetail('购买时间', s.purchase_date || '-');
+      if (s.refunded_at) html += subDetail('退款时间', s.refunded_at);
+      if (s.billing_issues_detected_at) html += subDetail('账单问题', s.billing_issues_detected_at);
+      html += `</div></div>`;
     });
   }
 
   document.getElementById('result').innerHTML = html;
 }
 
-function row(label, val) {
-  return `<div class="info-row"><span class="info-label">${label}</span><span class="info-val">${val}</span></div>`;
+function entDetail(label, val) {
+  return `<div class="ent-detail"><div class="label">${label}</div><div class="val">${val}</div></div>`;
+}
+
+function subDetail(label, val) {
+  return `<div class="sub-detail"><div class="label">${label}</div><div class="val">${val}</div></div>`;
 }
 </script>
 </body>
