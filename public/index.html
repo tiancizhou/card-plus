@@ -296,11 +296,24 @@ async function doStep1() {
     const res = await fetch(`${BASE}/api/card-keys/${encodeURIComponent(code)}`);
     const data = await res.json();
     renderStock(data);
-    if (!data.available) {
+    if (!data.available && !data.used_email) {
       setAlert('step1Alert','error', data.error || '卡密不可用');
       return;
     }
-    setAlert('step1Alert','success','卡密有效');
+    if (!data.available && data.used_email) {
+      document.getElementById('step1Alert').innerHTML = `
+        <div class="alert alert-warn" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.35)">
+          <div style="font-weight:600;margin-bottom:4px">卡密已使用</div>
+          <div style="font-size:0.82rem;margin-bottom:4px">充值账户：<span style="color:var(--accent)">${data.used_email}</span></div>
+          <div style="font-size:0.78rem;color:var(--warn);margin-bottom:12px">可使用已有记录重新充值，将向原账户重新发送凭证</div>
+          <button class="btn" style="width:100%;background:#f59e0b;color:#fff;padding:10px" onclick="proceedWithUsedCard()">使用已有记录充值</button>
+        </div>`;
+      state.card = code;
+      document.getElementById('verifiedCardDisplay').textContent = '卡密: ' + code;
+      document.getElementById('confirmCard').textContent = code;
+      return;
+    }
+    setAlert('step1Alert','success','✓ 卡密有效');
     if (data.product_api_type === 'claude') {
       setAlert('step1Alert','error','暂不支持 Claude 产品充值');
       return;
@@ -314,6 +327,10 @@ async function doStep1() {
   } finally {
     btn.disabled = false; btn.innerHTML = '<span>✓</span> 验证卡密';
   }
+}
+
+function proceedWithUsedCard() {
+  showPanel(2);
 }
 
 function renderStock(data) {
